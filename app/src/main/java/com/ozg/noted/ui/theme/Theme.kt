@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin.ui.theme
+package com.ozg.noted.ui.theme
 
 import android.app.Activity
 import android.os.Build

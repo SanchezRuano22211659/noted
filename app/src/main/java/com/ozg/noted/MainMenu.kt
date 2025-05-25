@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin
+package com.ozg.noted
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image

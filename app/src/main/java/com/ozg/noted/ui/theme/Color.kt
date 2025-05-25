@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin.ui.theme
+package com.ozg.noted.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

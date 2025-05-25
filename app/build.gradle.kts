@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.ozg.testappcomposekotlin"
+    namespace = "com.ozg.noted"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.ozg.testappcomposekotlin"
+        applicationId = "com.ozg.noted"
         minSdk = 21
         targetSdk = 35
         versionCode = 1
@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.ui.tooling.preview)
     implementation(libs.androidx.activity.compose)
-    implementation ("androidx.navigation:navigation-compose:2.7.7")
-
+    implementation ("androidx.navigation:navigation-compose:2.9.0")
+    implementation ("com.github.jeziellago:compose-markdown:0.5.7")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
 }

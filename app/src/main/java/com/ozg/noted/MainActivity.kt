@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin
+package com.ozg.noted
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

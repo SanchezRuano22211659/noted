@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin
+package com.ozg.noted
 
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries,UsingMaterialAndMaterial3Libraries

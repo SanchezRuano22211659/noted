@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin
+package com.ozg.noted
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -114,7 +114,7 @@ fun CrearNota() {
             ) {
                 Button(
                     onClick = {
-                        GuradarNota() //funcion que hace el back para guardar la nota
+                        GuardarNota() //funcion que hace el back para guardar la nota
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -142,7 +142,7 @@ fun CrearNota() {
     }
 }
 
-fun GuradarNota(){
+fun GuardarNota(){
     //funcion que hace el back para guardar la nota
 }
 @Preview(showBackground = true)

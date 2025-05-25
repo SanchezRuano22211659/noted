@@ -1,4 +1,4 @@
-package com.ozg.testappcomposekotlin
+package com.ozg.noted
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
