@@ -2,6 +2,7 @@ package com.ozg.noted
 
 //noinspection UsingMaterialAndMaterial3Libraries,UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
+import android.content.Context
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,17 +33,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.ozg.noted.core.FileManager
 
 
 @Preview(showBackground = true)
 @Composable
 fun previewsss(){
-    CrearCarpeta()
+    val mockNavController = rememberNavController()
+    val context = LocalContext.current
+    CrearCarpeta(mockNavController, context)
 }
 
 @Composable
-fun CrearCarpeta(){
-    var tituloNota by remember { mutableStateOf("") }
+fun CrearCarpeta(navController : NavController, context: Context){
+    var nombreCarpeta by remember { mutableStateOf("") }
 
     Box(
         modifier = Modifier
@@ -68,8 +75,8 @@ fun CrearCarpeta(){
         ) {
             // Nombre de la carpeta
             androidx.compose.material3.OutlinedTextField(
-                value = tituloNota,
-                onValueChange = { tituloNota = it },
+                value = nombreCarpeta,
+                onValueChange = { nombreCarpeta = it },
                 placeholder = {
                     Text(
                         "Nombre de la carpeta",
@@ -129,7 +136,7 @@ fun CrearCarpeta(){
         ) {
             Button(
                 onClick = {
-                    GuardarCarpeta() //funcion para guardar la carpeta
+                    GuardarCarpeta(nombreCarpeta, navController, context)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,8 +158,14 @@ fun CrearCarpeta(){
             }
         }
     }
+    
 }
 
-fun GuardarCarpeta(){
-    //funcion que hace el back del boton para guardar la nota
+    fun GuardarCarpeta(folderName: String,navController: NavController, context: Context) {
+    if (folderName.isNotEmpty()) {
+        val success = FileManager.createFolder(folderName)
+        if (success) {
+            navController.popBackStack()
+        }
+    }
 }

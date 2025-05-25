@@ -1,13 +1,13 @@
 package com.ozg.noted
 
-import androidx.compose.foundation.Image
+import android.annotation.SuppressLint
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,17 +29,50 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import android.util.Log
+import com.ozg.noted.core.LinkExtractor
+import com.ozg.noted.core.NoteDatabaseHelper
 
+@SuppressLint("RememberReturnType")
 @Composable
-fun CrearNota() {
+fun CrearNota(navController : NavController, context: Context) {
+    val scope = rememberCoroutineScope()
     var mostrarEditor by remember { mutableStateOf(false) }
     var tituloNota by remember { mutableStateOf("") }
     var contenidoNota by remember { mutableStateOf("") }
+    val dbHelper = remember { NoteDatabaseHelper(context) }
+    
+    fun GuardarNota() {
+        if (tituloNota.isBlank()) return
+        scope.launch(Dispatchers.IO)
+        {
+            try {
+                dbHelper.insertNote(id = tituloNota, title = tituloNota, path = "/$tituloNota.md")
+
+                LinkExtractor.extractLinks(contenidoNota).forEach { target ->
+                    dbHelper.insertLink(tituloNota, target)
+                }
+
+                withContext(Dispatchers.Main) {
+                    navController.popBackStack()
+                }
+            }
+            catch (e: Exception) {
+                Log.e("GuardarNota", "Error: ${e.message}")
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -114,7 +147,7 @@ fun CrearNota() {
             ) {
                 Button(
                     onClick = {
-                        GuardarNota() //funcion que hace el back para guardar la nota
+                        GuardarNota()
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -142,11 +175,11 @@ fun CrearNota() {
     }
 }
 
-fun GuardarNota(){
-    //funcion que hace el back para guardar la nota
-}
+
 @Preview(showBackground = true)
 @Composable
 fun previewss(){
-    CrearNota()
+    val mockNavController = rememberNavController()
+    val context = androidx.compose.ui.platform.LocalContext.current
+    CrearNota(mockNavController, context)
 }
