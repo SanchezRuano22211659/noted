@@ -76,12 +76,12 @@ fun MainMenu(){
     ) {
         NavHost(
             navController = navController,
-            startDestination = OptionsScreens.ScreenCrearNota.path
+            startDestination = OptionsScreens.ScreenExploradorArchivos.path
         ) {
-            composable(OptionsScreens.ScreenCrearNota.path) { ExploradorArchivos() }
-            composable(OptionsScreens.ScreenCrearCarpeta.path) { VerGrafo() }
+            composable(OptionsScreens.ScreenCrearCarpeta.path) { CrearCarpeta() }
+            composable(OptionsScreens.ScreenCrearNota.path) { CrearNota() }
             composable(OptionsScreens.ScreenGraphView.path) { VerGrafo() }
-            composable(OptionsScreens.ScreenExploradorArchivos.path) { ExploradorArchivos() }
+            composable(OptionsScreens.ScreenExploradorArchivos.path) { ExploradorDeArchivos(navController) }
         }
     }
 }
@@ -154,7 +154,8 @@ fun Drawer(
         options_list.forEach{item ->
             DrawerItem(item = item) {
                 navController.navigate(item.path) {
-                    popUpTo(0)
+                    launchSingleTop = true
+                    //popUpTo(0)
                 }
                 closeDrawer()
             }
