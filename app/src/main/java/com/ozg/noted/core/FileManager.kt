@@ -16,8 +16,8 @@ object FileManager {
 
     fun getBaseDir(): File = baseDir
 
-    fun createNote(fileName: String, content: String): Boolean {
-        val file = File(baseDir, "$fileName.md")
+    fun createNote(fileName: String, content: String, directory: File = baseDir): Boolean {
+        val file = File(directory, fileName)
         return try {
             file.writeText(content)
             true

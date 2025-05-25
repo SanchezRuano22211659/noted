@@ -92,8 +92,14 @@ fun ExploradorDeArchivos(navController: NavController) {
                     text = "Escribiste: ${textoBusqueda.text}",
                     modifier = Modifier.padding(start = 16.dp)
             )
+            val filteredFiles = remember(files, textoBusqueda.text) {
+                if (textoBusqueda.text.isEmpty()) files
+                else files.filter {
+                    file -> file.name.contains(textoBusqueda.text, ignoreCase = true)
+                }
+            }
             LazyColumn {
-                items(files, key = { it.absolutePath }) { file ->
+                items(filteredFiles, key = { it.absolutePath }) { file ->
                     FileItem(
                             file = file,
                             onClick = {
@@ -133,7 +139,7 @@ fun ExploradorDeArchivos(navController: NavController) {
             IconButton(
                     onClick = {
                         Log.d("NAV", "Navegando a crearNota")
-                        navController.navigate("ScreenCrearNota")
+                        navController.navigate("ScreenCrearNota?currentDir=${currentDir.absolutePath}")
                     }
             ) {
                 Image(
@@ -197,7 +203,7 @@ fun AppNavigation() {
     val context = LocalContext.current
     NavHost(navController, startDestination = "explorador") {
         composable("explorador") { ExploradorDeArchivos(navController) }
-        composable("crearNota") { CrearNota(navController, context) }
+        composable("crearNota") { CrearNota(navController, context, FileManager.getBaseDir()) }
         composable("crearCarpeta") { CrearCarpeta(navController, context) }
         composable("editor/{fileName}") { backStackEntry ->
             val fileName = backStackEntry.arguments?.getString("fileName") ?: ""

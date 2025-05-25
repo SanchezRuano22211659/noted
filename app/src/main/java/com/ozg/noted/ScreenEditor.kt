@@ -20,19 +20,21 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ozg.noted.core.FileManager
+import com.ozg.noted.core.NoteDatabaseHelper
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditorScreen(fileName: String, navController: NavController? = null) {
-    val context = LocalContext.current
+fun EditorScreen(fileName: String, navController: NavController? = null, onSave: () -> Unit = {}) {
     val file = remember { File(FileManager.getBaseDir(), fileName) }
     var content by remember { mutableStateOf("") }
 
-    LaunchedEffect(Unit) {
-        content = if (file.exists()) file.readText() else ""
-    }
+    LaunchedEffect(Unit) { content = if (file.exists()) file.readText() else "" }
+
+    var refresh by remember { mutableStateOf(false) }
 
     Scaffold(
             floatingActionButton = {
@@ -40,6 +42,8 @@ fun EditorScreen(fileName: String, navController: NavController? = null) {
                 androidx.compose.material3.FloatingActionButton(
                         onClick = {
                             FileManager.createNote(fileName, content)
+                            file.writeText(content)
+                            onSave()
                             navController?.popBackStack()
                         }
                 ) { Text("💾") }
@@ -61,7 +65,6 @@ fun EditorScreen(fileName: String, navController: NavController? = null) {
         }
     }
 
-    file.writeText(content)
 }
 
 @Preview(showBackground = true)

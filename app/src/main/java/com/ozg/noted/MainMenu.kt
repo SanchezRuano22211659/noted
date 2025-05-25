@@ -27,6 +27,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,22 +44,24 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.ozg.noted.core.FileManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 
 val UnageoSemiBoltItaliz = FontFamily(Font(R.font.unageosmiboltitalic))
 
 @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @Composable
 fun MainMenu() {
+    var refreshCounter by remember { mutableStateOf(0) }
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
@@ -88,9 +93,9 @@ fun MainMenu() {
             }
             composable(OptionsScreens.ScreenCrearNota.path) {
                 val context = LocalContext.current
-                CrearNota(navController, context)
+                CrearNota(navController, context, FileManager.getBaseDir())
             }
-            composable(OptionsScreens.ScreenGraphView.path) { VerGrafo(navController) }
+            composable(OptionsScreens.ScreenGraphView.path) { VerGrafo(navController, refreshCounter) }
             composable(OptionsScreens.ScreenExploradorArchivos.path) {
                 ExploradorDeArchivos(navController)
             }
@@ -99,7 +104,11 @@ fun MainMenu() {
                     arguments = listOf(navArgument("fileName") { type = NavType.StringType })
             ) { backStackEntry ->
                 val fileName = backStackEntry.arguments?.getString("fileName") ?: ""
-                EditorScreen(fileName = fileName, navController = navController)
+                EditorScreen(
+                        fileName = fileName,
+                        navController = navController,
+                        onSave = { refreshCounter++ }
+                )
             }
         }
     }
