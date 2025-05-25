@@ -1,13 +1,14 @@
 package com.ozg.noted.core
 
 import android.content.Context
+import android.os.Environment
 import java.io.File
 
 object FileManager {
     private lateinit var baseDir: File
 
     fun initialize(context: Context) {
-        baseDir = File(context.filesDir, "Noted")
+        baseDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Noted")
         if (!baseDir.exists()) {
             baseDir.mkdirs()
         }

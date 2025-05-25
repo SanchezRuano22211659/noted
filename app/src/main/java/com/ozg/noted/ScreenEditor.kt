@@ -21,21 +21,17 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.ozg.noted.core.FileManager
 import dev.jeziellago.compose.markdowntext.MarkdownText
+import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditorScreen(fileName: String, navController: NavController? = null) {
     val context = LocalContext.current
+    val file = remember { File(FileManager.getBaseDir(), fileName) }
     var content by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        content =
-                try {
-                    FileManager.createNote(fileName, "")
-                    FileManager.readNote(fileName)
-                } catch (e: Exception) {
-                    "Error cargando la nota"
-                }
+        content = if (file.exists()) file.readText() else ""
     }
 
     Scaffold(
@@ -64,6 +60,8 @@ fun EditorScreen(fileName: String, navController: NavController? = null) {
             )
         }
     }
+
+    file.writeText(content)
 }
 
 @Preview(showBackground = true)

@@ -4,11 +4,14 @@ package com.ozg.noted
 //noinspection UsingMaterialAndMaterial3Libraries,UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
 //noinspection UsingMaterialAndMaterial3Libraries
-import android.graphics.drawable.Icon
+
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,11 +21,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.IconButton
 import androidx.compose.material.OutlinedTextField
-import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -95,6 +101,8 @@ fun ExploradorDeArchivos(navController: NavController) {
                                     currentDir = file
                                     files = FileManager.listContents(file)
                                 } else {
+                                    val relativePath =
+                                            file.relativeTo(FileManager.getBaseDir()).path
                                     navController.navigate("editor/${file.name}")
                                 }
                             }
@@ -150,17 +158,36 @@ fun ExploradorDeArchivos(navController: NavController) {
 
 @Composable
 fun FileItem(file: File, onClick: () -> Unit) {
-    Row(modifier = Modifier.fillMaxWidth().clickable { onClick() }) {
-        Icon(
+    val interactionSource = remember { MutableInteractionSource() }
+    val indication = LocalIndication.current
+    Row(
+            modifier =
+                    Modifier.fillMaxWidth()
+                            .indication(interactionSource, indication)
+                            .clickable(
+                                    onClick = onClick,
+                                    indication = null,
+                                    interactionSource = remember { MutableInteractionSource() }
+                            )
+                            .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+    ) {
+        Image(
                 painter =
                         painterResource(
                                 id =
                                         if (file.isDirectory) R.drawable.icon_folder
                                         else R.drawable.icon_file
                         ),
-                contentDescription = null
+                contentDescription = null,
+                modifier = Modifier.size(24.dp)
         )
-        Text(file.name)
+        Spacer(modifier = Modifier.width(16.dp))
+        Text(
+                text = file.name,
+                color = if (file.isDirectory) Color.Blue else Color.Black,
+                modifier = Modifier.weight(1f)
+        )
     }
 }
 
